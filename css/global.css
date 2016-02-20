@@ -46,15 +46,6 @@ p {
     align-items: center;
     justify-content: center;
 }
-#climateLoginButton {
-}
-
-#climateCreateButton {
-}
-
-#nav {
-    
-}
 
 #container {
     display: flex;
@@ -70,6 +61,8 @@ p {
     background: #fff;
     display: flex;
     flex-direction: column;
+    min-width: 400px;
+    max-width: 400;
 }
 
 #map {
@@ -221,4 +214,13 @@ i {
     font-size: 50px;
     font-family: artill;
     vertical-align: bottom;
+}
+
+#signature {
+    font-size: 12px;
+    text-align: center;
+    position: fixed;
+    bottom:0px;
+    left: 100px;
+    margin: 2px;
 }

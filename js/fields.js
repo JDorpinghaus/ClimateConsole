@@ -2,7 +2,6 @@
 var Map;
 
 $(document).ready(function() {
-    console.log( "Starting scripts" );
     listFields();
 });
 
@@ -15,7 +14,6 @@ function initMap() {
 }
 
 function listFields(){
-  console.log("Requesting fields");
   $.ajax({
     url: 'https://hackillinois.climate.com/api/fields?includeBoundary=true',
     xhrFields: {
@@ -23,11 +21,13 @@ function listFields(){
     },
     dataType: 'json',
     success: function(d) {
-      console.log('fields loaded');
+      console.log('Loaded ' + d.fields.length + ' fields:');
+      console.log(d);
       markFields(d);
       loadList(d);
       loadClicks(d);
       populateWeather(d);
+      centerMap(d.fields[0].centroid.coordinates[1], d.fields[0].centroid.coordinates[0]);
     },
     error: function(error) {
       console.log('error: ');
@@ -37,7 +37,6 @@ function listFields(){
 }
 
 function markFields(d){
-  console.log('marking fields');
   $.each(d.fields, function(index, element){
     var coords = new Array(element.boundary.coordinates.length);
     $.each(coords, function(ind, el){
@@ -47,9 +46,7 @@ function markFields(d){
       });
     });
     newMarker(Map, element.centroid.coordinates[1], element.centroid.coordinates[0], element.name);
-    console.log("field " + index + " marked at " + element.centroid.coordinates[1] + ' , ' + element.centroid.coordinates[0]);
     $.each(coords, function(index, element){
-      console.log(element);
       var polygon = new google.maps.Polygon({
         map: Map,
         paths: element,
@@ -96,8 +93,6 @@ function getUsername(element){
 }
 
 function loadList(d){
-  console.log('loadlist');
-  console.log(d);
   $.each(d.fields, function(index, element){
     $("#fieldList").append(`
       <div class="field" id="field` + index + `">
@@ -123,9 +118,7 @@ function loadClicks(d){
       }
       $(this).children(".fieldDetail").animate({height: 'toggle'}, 200, function(){});
       $(this).siblings(".field").children(".fieldDetail").each(function(index, element){
-        console.log($(element).attr('visible'));
         if ($(element).attr('visible') == 'true'){
-          console.log('true');
           $(element).animate({height: 'toggle'}, 200, function(){});
           $(element).attr('visible', 'false');
         }
@@ -140,7 +133,6 @@ function loadWeather(div, lat, lon){
     woeid: '',
     unit: 'f',
     success: function(weather) {
-      console.log('weather success');
       $(div).addClass("icon-" + weather.code);
     },
     error: function(error) {
@@ -153,4 +145,9 @@ function populateWeather(d){
   $.each(d.fields, function(index, element){
     loadWeather("#weatherIcon_" + element.id, element.centroid.coordinates[1], element.centroid.coordinates[0]);
   });
+}
+
+function centerMap(lat, long){
+  Map.setCenter({lat: lat, lng: long});
+  $("#field0").click();
 }
