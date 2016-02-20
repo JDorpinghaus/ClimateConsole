@@ -101,16 +101,32 @@ function loadList(d){
     $("#fieldList").append(`
       <div class="field" id="field` + index + `>
         <p class="fieldTitle">` + element.name + `</p>
-      </div>
-    `);
+        <div class="fieldDetail" id="field` + index + `Detail" visible="false" style="display: none">
+          <p class="fieldText">Area: ` + element.area.q + element.area.u + `</p>
+          <p class="fieldText">Weather: Rain</p>
+        </div>
+      </div>`);
   });
 }
 
 function loadClicks(d){
   $(".field").each(function(index){
     $(this).click(function(){
-      console.log(this);
       Map.panTo({lat: d.fields[index].centroid.coordinates[1], lng: d.fields[index].centroid.coordinates[0]});
+      if ($(this).children(".fieldDetail").attr('visible') == 'true'){
+        $(this).children(".fieldDetail").attr('visible', 'false');
+      } else {
+        $(this).children(".fieldDetail").attr('visible', 'true');
+      }
+      $(this).children(".fieldDetail").animate({height: 'toggle'}, 200, function(){});
+      $(this).siblings(".field").children(".fieldDetail").each(function(index, element){
+        console.log($(element).attr('visible'));
+        if ($(element).attr('visible') == 'true'){
+          console.log('true');
+          $(element).animate({height: 'toggle'}, 200, function(){});
+          $(element).attr('visible', 'false');
+        }
+      });
     });
   });
 }
