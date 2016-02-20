@@ -1,6 +1,4 @@
 $(document).ready(function() {
-    console.log( "Starting scripts" );
-    listFields();
 });
 
 function login() {

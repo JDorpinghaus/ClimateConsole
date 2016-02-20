@@ -1,3 +1,7 @@
+* {
+    -webkit-user-select: none;
+}
+
 body {
     background: #383838;
     padding: 0px;
