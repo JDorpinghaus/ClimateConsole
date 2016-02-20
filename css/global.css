@@ -84,6 +84,7 @@ p {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
 }
 
 .navimg {
@@ -125,7 +126,7 @@ p {
     font-size: 15px;
     text-align: center;
     padding: 3px;
-    
+    text-align: left;
 }
 
 .fieldDetail{
@@ -160,7 +161,7 @@ p {
 
 i {
   color: #000;
-  font-family: weather;
+  font-family: weatherFont;
   font-size: 150px;
   font-weight: normal;
   font-style: normal;
@@ -215,3 +216,9 @@ i {
 .icon-45:before { content: "S"; }
 .icon-46:before { content: "U"; }
 .icon-47:before { content: "S"; }
+
+.Weathericon {
+    font-size: 50px;
+    font-family: artill;
+    vertical-align: bottom;
+}

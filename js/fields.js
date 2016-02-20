@@ -4,7 +4,6 @@ var Map;
 $(document).ready(function() {
     console.log( "Starting scripts" );
     listFields();
-    populateWeather();
 });
 
 function initMap() {
@@ -28,6 +27,7 @@ function listFields(){
       markFields(d);
       loadList(d);
       loadClicks(d);
+      populateWeather(d);
     },
     error: function(error) {
       console.log('error: ');
@@ -103,8 +103,8 @@ function loadList(d){
       <div class="field" id="field` + index + `">
         <p class="fieldTitle">` + element.name + `</p>
         <div class="fieldDetail" id="field` + index + `Detail" visible="false" style="display: none">
+          <p class="fieldText">Current Weather: <i class="weatherIcon" id="weatherIcon_` + element.id + `"></p>
           <p class="fieldText">Area: ` + element.area.q + element.area.u + `</p>
-          <p class="fieldText">Current Weather: <span class='weatherIcon'></span></p>
           <p class="fieldText"><img class="fieldicon" src="css/img/addNoteIcon.png">Notes: </p>
           <p class="fieldText"><img class="fieldIcon" src="css/img/plantIcon.png">Activities: </p>
         </div>
@@ -141,7 +141,7 @@ function loadWeather(div, lat, lon){
     unit: 'f',
     success: function(weather) {
       console.log('weather success');
-      $(div).addClass("icon-" + weather.code + "'");
+      $(div).addClass("icon-" + weather.code);
     },
     error: function(error) {
       console.log(error);
