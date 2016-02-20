@@ -17,7 +17,7 @@ function initMap() {
 function listFields(){
   console.log("Requesting fields");
   $.ajax({
-    url: 'https://hackillinois.climate.com/api/fields/',
+    url: 'https://hackillinois.climate.com/api/fields?includeBoundary=true',
     xhrFields: {
       withCredentials: true,
     },
@@ -38,8 +38,27 @@ function listFields(){
 function markFields(d){
   console.log('marking fields');
   $.each(d.fields, function(index, element){
+    var coords = new Array(element.boundary.coordinates.length);
+    $.each(coords, function(ind, el){
+      coords[ind] = [];
+      $.each(element.boundary.coordinates[ind][0], function(inde, elemen){
+        coords[ind].push({lat: elemen[1], lng: elemen[0]});
+      });
+    });
     newMarker(Map, element.centroid.coordinates[1], element.centroid.coordinates[0], element.name);
     console.log("field " + index + " marked at " + element.centroid.coordinates[1] + ' , ' + element.centroid.coordinates[0]);
+    $.each(coords, function(index, element){
+      console.log(element);
+      var polygon = new google.maps.Polygon({
+        map: Map,
+        paths: element,
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.8,
+        strokeWeight: 3,
+        fillColor: '#FF0000',
+        fillOpacity: 0.35
+      });
+    });
   });
 }
 
