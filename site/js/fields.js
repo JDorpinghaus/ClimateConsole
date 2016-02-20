@@ -4,6 +4,7 @@ $(document).ready(function() {
     console.log( "Starting scripts" );
     var fieldsList = listFields();
     markFields(fieldsList);
+    //getUsername('username');
 });
 
 function initMap() {
@@ -53,4 +54,22 @@ function newMarker(map, lat, long, title){
       infowindow.open(map,marker);
     });
   console.log('title' + title);
+}
+
+function getUsername(element){
+  $.ajax({
+    url: 'https://hackillinois.climate.com/api/users/details',
+    xhrFields: {
+      withCredentials: true,
+    },
+    dataType: 'json',
+    Authorization: '', //How to get userid/email address from current user?
+    success: function(d) {
+      $("#" + element).text('Welcome, ' + d.UserDetails.firstname);
+    },
+    error: function(error) {
+      console.log('error: ');
+      console.log(error);
+    }
+  });
 }
