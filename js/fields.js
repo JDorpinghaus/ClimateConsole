@@ -4,6 +4,7 @@ var Map;
 $(document).ready(function() {
     console.log( "Starting scripts" );
     listFields();
+    populateWeather();
 });
 
 function initMap() {
@@ -99,11 +100,13 @@ function loadList(d){
   console.log(d);
   $.each(d.fields, function(index, element){
     $("#fieldList").append(`
-      <div class="field" id="field` + index + `>
+      <div class="field" id="field` + index + `">
         <p class="fieldTitle">` + element.name + `</p>
         <div class="fieldDetail" id="field` + index + `Detail" visible="false" style="display: none">
           <p class="fieldText">Area: ` + element.area.q + element.area.u + `</p>
-          <p class="fieldText">Weather: Rain</p>
+          <p class="fieldText">Current Weather: <span class='weatherIcon'></span></p>
+          <p class="fieldText"><img class="fieldicon" src="css/img/addNoteIcon.png">Notes: </p>
+          <p class="fieldText"><img class="fieldIcon" src="css/img/plantIcon.png">Activities: </p>
         </div>
       </div>`);
   });
@@ -128,5 +131,26 @@ function loadClicks(d){
         }
       });
     });
+  });
+}
+
+function loadWeather(div, lat, lon){
+  $.simpleWeather({
+    location: lat+','+lon,
+    woeid: '',
+    unit: 'f',
+    success: function(weather) {
+      console.log('weather success');
+      $(div).addClass("icon-" + weather.code + "'");
+    },
+    error: function(error) {
+      console.log(error);
+    }
+  });
+}
+
+function populateWeather(d){
+  $.each(d.fields, function(index, element){
+    loadWeather("#weatherIcon_" + element.id, element.centroid.coordinates[1], element.centroid.coordinates[0]);
   });
 }
