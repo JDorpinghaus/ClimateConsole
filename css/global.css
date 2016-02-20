@@ -3,6 +3,10 @@
     font-family: 'Montserrat', sans-serif;
 }
 
+*:focus {
+    outline: none;
+}
+
 body {
     background: url(img/background2.jpg);
     background-position: bottom left;
@@ -82,8 +86,13 @@ p {
     align-items: center;
 }
 
-#logo {
+.navimg {
     height: 50px;
+}
+
+#logo {
+    margin: 7px 0px;
+    height: 36px;
 }
 
 #username {
@@ -110,4 +119,8 @@ p {
 
 .fieldTitle {
     height: 20px;
+}
+
+#or {
+    font-size: 20px;
 }
