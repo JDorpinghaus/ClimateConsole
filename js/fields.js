@@ -215,26 +215,21 @@ function markFields(d){
     $.each(coords, function(ind, el){
       coords[ind] = [];
       $.each(element.boundary.coordinates[ind][0], function(inde, elemen){
-        coords[ind].push({lat: elemen[1], lng: elemen[0]});
+        coords[ind].push({lat: parseFloat(elemen[1]), lng: parseFloat(elemen[0])});
       });
     });
     newMarker(Map, element.centroid.coordinates[1], element.centroid.coordinates[0], element.name, element.id);
-    $.each(coords, function(ind, element){
-      if (isNaN(element[0].lat) || isNaN(element[0].lng)){
-        console.log(d.fields[ind].name);
-        error.push(d.fields[ind].name);
-        return false;
-      } else {
+    $.each(coords, function(ind, el){
+      console.log(el);
         var polygon = new google.maps.Polygon({
           map: Map,
-          paths: element,
+          paths: el,
           strokeColor: '#FF0000',
           strokeOpacity: 0.8,
           strokeWeight: 3,
           fillColor: '#FF0000',
           fillOpacity: 0.35
         });
-      }
     });
   });
   var errorMessage;
