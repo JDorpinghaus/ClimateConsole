@@ -209,6 +209,7 @@ function listFields(){
 }
 
 function markFields(d){
+  var error = new Array();
   $.each(d.fields, function(index, element){
     var coords = new Array(element.boundary.coordinates.length);
     $.each(coords, function(ind, el){
@@ -218,18 +219,41 @@ function markFields(d){
       });
     });
     newMarker(Map, element.centroid.coordinates[1], element.centroid.coordinates[0], element.name, element.id);
-    $.each(coords, function(index, element){
-      var polygon = new google.maps.Polygon({
-        map: Map,
-        paths: element,
-        strokeColor: '#FF0000',
-        strokeOpacity: 0.8,
-        strokeWeight: 3,
-        fillColor: '#FF0000',
-        fillOpacity: 0.35
-      });
+    $.each(coords, function(ind, element){
+      if (isNaN(element[0].lat) || isNaN(element[0].lng)){
+        console.log(d.fields[ind].name);
+        error.push(d.fields[ind].name);
+        return false;
+      } else {
+        var polygon = new google.maps.Polygon({
+          map: Map,
+          paths: element,
+          strokeColor: '#FF0000',
+          strokeOpacity: 0.8,
+          strokeWeight: 3,
+          fillColor: '#FF0000',
+          fillOpacity: 0.35
+        });
+      }
     });
   });
+  var errorMessage;
+    if (error.length > 0){
+      if (error.length > 1){
+        errorMessage = 'Error drawing borders for fields ';
+        $.each(error, function(i, e){
+          console.log(e);
+          if (i = error.length){
+            errorMessage += e;
+          } else {
+            errorMessage += (e + ', ');
+          }
+        });
+      } else {
+        errorMessage = 'Error drawing border for field ' + error[0].name;
+      }
+      alert(errorMessage);
+    }
 }
 
 function newMarker(map, lat, long, title, id){
