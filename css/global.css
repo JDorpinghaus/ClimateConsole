@@ -63,6 +63,7 @@ p {
     flex-direction: column;
     min-width: 400px;
     max-width: 400;
+    overflow-y: scroll;
 }
 
 #map {
@@ -111,7 +112,7 @@ p {
     font-family: 'Montserrat', sans-serif;
     font-size: 20px;
     cursor: pointer;
-    min-height: 50px;
+    min-height: 60px;
 }
 
 .fieldTitle {
@@ -126,6 +127,7 @@ p {
 
 .fieldDetail{
     width: 80%;
+    height: auto;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -219,10 +221,13 @@ i {
 }
 
 #signature {
+    width: 200px;
     font-size: 12px;
+    background: #fff;
+    border: 2px solid #000;
     text-align: center;
     position: fixed;
-    bottom:0px;
+    bottom:5px;
     left: 100px;
     margin: 2px;
 }

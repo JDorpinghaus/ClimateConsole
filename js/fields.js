@@ -178,15 +178,19 @@ function loadClicks(d){
     $(this).click(function(){
       Map.panTo({lat: d.fields[index].centroid.coordinates[1], lng: d.fields[index].centroid.coordinates[0]});
       if ($(this).children(".fieldDetail").attr('visible') == 'true'){
+        $(this).animate({'min-height':'60px'});
+        $(this).children(".fieldDetail").fadeOut();
         $(this).children(".fieldDetail").attr('visible', 'false');
       } else {
         $(this).children(".fieldDetail").attr('visible', 'true');
+        $(this).animate({'min-height':'300px'});
+        $(this).children(".fieldDetail").fadeIn();
       }
-      $(this).children(".fieldDetail").animate({height: 'toggle'}, 200, function(){});
       $(this).siblings(".field").children(".fieldDetail").each(function(index, element){
         if ($(element).attr('visible') == 'true'){
-          $(element).animate({height: 'toggle'}, 200, function(){});
+          $(element).fadeOut();
           $(element).attr('visible', 'false');
+          $(element).parent().animate({'min-height':'60px'});
         }
       });
     });
