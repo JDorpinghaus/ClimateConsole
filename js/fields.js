@@ -23,8 +23,60 @@ var json=`{
 		"note": "More fertilizer than last month"
 	}, {
 		"user": "user1",
-		"field": "24616311",
+		"field": "24616607",
 		"note": "Spray more weed killer"
+	}, {
+		"user": "user1",
+		"field": "24616575",
+		"note": "Dry soil on Tuesday"
+	}, {
+		"user": "user1",
+		"field": "24616583",
+		"note": "Dry soil on Tuesday"
+	}, {
+		"user": "user1",
+		"field": "24616605",
+		"note": "Dry soil on Tuesday"
+	}, {
+		"user": "user1",
+		"field": "24616584",
+		"note": "Dry soil on Tuesday"
+	}, {
+		"user": "user1",
+		"field": "24616612",
+		"note": "Dry soil on Tuesday"
+	}, {
+		"user": "user1",
+		"field": "24616611",
+		"note": "Dry soil on Tuesday"
+	}, {
+		"user": "user1",
+		"field": "24616304",
+		"note": "Dry soil on Tuesday"
+	}, {
+		"user": "user1",
+		"field": "24616580",
+		"note": "Dry soil on Tuesday"
+	}, {
+		"user": "user1",
+		"field": "24616579",
+		"note": "Dry soil on Tuesday"
+	}, {
+		"user": "user1",
+		"field": "24616606",
+		"note": "Dry soil on Tuesday"
+	}, {
+		"user": "user1",
+		"field": "24616582",
+		"note": "Too much fertilizer last month"
+	}, {
+		"user": "user1",
+		"field": "24616574",
+		"note": "Too much fertilizer last month"
+	}, {
+		"user": "user1",
+		"field": "24616581",
+		"note": "Too much fertilizer last month"
 	}]
 }`;
 
@@ -53,11 +105,68 @@ var json2 = `{
 		"user": "user1",
 		"field": "24616311",
 		"activity": "Plowed half of the east side on Wednesday"
+	}, {
+		"user": "user1",
+		"field": "24616583",
+		"activity": "Sprayed Round-up in a 50% diluted solution"
+	}, {
+		"user": "user1",
+		"field": "24616605",
+		"activity": "Sprayed Round-up in a 50% diluted solution"
+	}, {
+		"user": "user1",
+		"field": "24616584",
+		"activity": "Sprayed Round-up in a 50% diluted solution"
+	}, {
+		"user": "user1",
+		"field": "24616612",
+		"activity": "Sprayed Round-up in a 50% diluted solution"
+	}, {
+		"user": "user1",
+		"field": "24616611",
+		"activity": "Sprayed Round-up in a 50% diluted solution"
+	}, {
+		"user": "user1",
+		"field": "24616304",
+		"activity": "Sprayed Round-up in a 50% diluted solution"
+	}, {
+		"user": "user1",
+		"field": "24616580",
+		"activity": "Sprayed Round-up in a 50% diluted solution"
+	}, {
+		"user": "user1",
+		"field": "24616312",
+		"activity": "Sprayed Round-up in a 50% diluted solution"
+	}, {
+		"user": "user1",
+		"field": "24616579",
+		"activity": "Sprayed Round-up in a 50% diluted solution"
+	}, {
+		"user": "user1",
+		"field": "24616606",
+		"activity": "Sprayed Round-up in a 50% diluted solution"
+	}, {
+		"user": "user1",
+		"field": "24616574",
+		"activity": "Sent soil in for testing in January"
+	}, {
+		"user": "user1",
+		"field": "24616582",
+		"activity": "Sent soil in for testing in January"
+	}, {
+		"user": "user1",
+		"field": "24616607",
+		"activity": "Sent soil in for testing in January"
+	}, {
+		"user": "user1",
+		"field": "24616575",
+		"activity": "Sent soil in for testing in January"
 	}]
 }`;
 var obj = $.parseJSON(json);
 var obj2 = $.parseJSON(json2);
 var Map;
+var markers = [];
 
 $(document).ready(function() {
     listFields();
@@ -108,7 +217,7 @@ function markFields(d){
         coords[ind].push({lat: elemen[1], lng: elemen[0]});
       });
     });
-    newMarker(Map, element.centroid.coordinates[1], element.centroid.coordinates[0], element.name);
+    newMarker(Map, element.centroid.coordinates[1], element.centroid.coordinates[0], element.name, element.id);
     $.each(coords, function(index, element){
       var polygon = new google.maps.Polygon({
         map: Map,
@@ -123,18 +232,20 @@ function markFields(d){
   });
 }
 
-function newMarker(map, lat, long, title){
+function newMarker(map, lat, long, title, id){
   var infowindow = new google.maps.InfoWindow({
       content: title
   });
-  var marker = new google.maps.Marker({
+  var newMarker = new google.maps.Marker({
     position: {lat: lat, lng: long},
     map: map,
     title: title
   });
-  google.maps.event.addListener(marker, 'click', function() {
-      infowindow.open(map,marker);
+  google.maps.event.addListener(newMarker, 'click', function() {
+      infowindow.open(map,newMarker);
     });
+    newMarker.set("id", id);
+    markers.push(newMarker);
 }
 
 function getUsername(element){
@@ -159,7 +270,7 @@ function getUsername(element){
 function loadList(d){
   $.each(d.fields, function(index, element){
     $("#fieldList").append(`
-      <div class="field" id="field` + index + `">
+      <div class="field" fieldid="` + element.id + `" id="field` + index + `">
         <p class="fieldTitle">` + element.name + `</p>
         <div class="fieldDetail" id="field` + index + `Detail" visible="false" style="display: none">
           <p class="fieldText">Current Weather: <i class="weatherIcon" id="weatherIcon_` + element.id + `"></p>
@@ -176,19 +287,31 @@ function loadList(d){
 function loadClicks(d){
   $(".field").each(function(index){
     $(this).click(function(){
+      var fieldid = $(this).attr('fieldid');
       Map.panTo({lat: d.fields[index].centroid.coordinates[1], lng: d.fields[index].centroid.coordinates[0]});
       if ($(this).children(".fieldDetail").attr('visible') == 'true'){
         $(this).animate({'min-height':'60px'});
         $(this).children(".fieldDetail").fadeOut();
         $(this).children(".fieldDetail").attr('visible', 'false');
       } else {
+        $.each(markers, function(i, e){
+          console.log(e.get("id"));
+          console.log($(this).attr('fieldid'));
+          if (e.get("id") == fieldid){
+            e.setAnimation(google.maps.Animation.BOUNCE);
+            console.log('bounce');
+            setTimeout(function(){
+              e.setAnimation(null);
+            }, 3000);
+          }
+        });
         $(this).children(".fieldDetail").attr('visible', 'true');
         $(this).animate({'min-height':'300px'});
         $(this).children(".fieldDetail").fadeIn();
       }
       $(this).siblings(".field").children(".fieldDetail").each(function(index, element){
         if ($(element).attr('visible') == 'true'){
-          $(element).fadeOut();
+          $(element).fadeOut('easeOutBounce');
           $(element).attr('visible', 'false');
           $(element).parent().animate({'min-height':'60px'});
         }
@@ -263,4 +386,3 @@ function loadActivities(div, activities){
   console.log(html);
   $(div).html(html);
 }
-
