@@ -303,6 +303,8 @@ function loadClicks(d){
             setTimeout(function(){
               e.setAnimation(null);
             }, 3000);
+          } else {
+            e.setAnimation(null);
           }
         });
         $(this).children(".fieldDetail").attr('visible', 'true');

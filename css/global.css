@@ -5,6 +5,7 @@
 
 *:focus {
     outline: none;
+    box-shadow: none !important;
 }
 
 body {
@@ -37,7 +38,13 @@ p {
     width: 400px;
     height: 80px;
     padding: 10px;
+    border-radius: 15px;
 }
+
+.climateButton:hover{
+    -webkit-filter: brightness(150%);
+}
+
 #loginInputHolder{
     height: 100%;
     display: flex;
