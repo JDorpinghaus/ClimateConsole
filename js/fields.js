@@ -1,8 +1,67 @@
 /* global google */
+
+var json=`{
+	"notes": [{
+		"user": "user1",
+		"field": "24616313",
+		"note": "Dry soil on Tuesday"
+	}, {
+		"user": "user1",
+		"field": "24616312",
+		"note": "Too much fertilizer last month"
+	}, {
+		"user": "user1",
+		"field": "24616304",
+		"note": "Need more water"
+	}, {
+		"user": "user1",
+		"field": "24616311",
+		"note": "Rotate crops more often"
+	}, {
+		"user": "user1",
+		"field": "24616312",
+		"note": "More fertilizer than last month"
+	}, {
+		"user": "user1",
+		"field": "24616311",
+		"note": "Spray more weed killer"
+	}]
+}`;
+
+var json2 = `{
+	"activities": [{
+		"user": "user1",
+		"field": "24616313",
+		"activity": "Watered crops on Tuesday"
+	}, {
+		"user": "user1",
+		"field": "24616312",
+		"activity": "Planted seeds on February 12th"
+	}, {
+		"user": "user1",
+		"field": "24616304",
+		"activity": "Sprayed Round-up in a 50% diluted solution"
+	}, {
+		"user": "user1",
+		"field": "24616311",
+		"activity": "Sent soil in for testing in January"
+	}, {
+		"user": "user1",
+		"field": "24616312",
+		"activity": "Contacted ConAgra regarding seed subsidies"
+	}, {
+		"user": "user1",
+		"field": "24616311",
+		"activity": "Plowed half of the east side on Wednesday"
+	}]
+}`;
+var obj = $.parseJSON(json);
+var obj2 = $.parseJSON(json2);
 var Map;
 
 $(document).ready(function() {
     listFields();
+    getUsername('#username');
 });
 
 function initMap() {
@@ -28,6 +87,10 @@ function listFields(){
       loadClicks(d);
       populateWeather(d);
       centerMap(d.fields[0].centroid.coordinates[1], d.fields[0].centroid.coordinates[0]);
+      $.each(d.fields, function(i, e){
+        loadNotes("#notes" + i, parseNotes(obj, d.fields[i].id));
+        loadActivities("#activities" + i, parseActivites(obj2, d.fields[i].id));
+      });
     },
     error: function(error) {
       console.log('error: ');
@@ -76,14 +139,15 @@ function newMarker(map, lat, long, title){
 
 function getUsername(element){
   $.ajax({
-    url: 'https://hackillinois.climate.com/api/users/details',
+    url: 'https://api.climate.com/api/oidc/userinfo',
     xhrFields: {
       withCredentials: true,
     },
     dataType: 'json',
-    Authorization: '', //How to get userid/email address from current user?
+    //Authorization: '', //How to get userid/email address from current user?
     success: function(d) {
-      $("#" + element).text('Welcome, ' + d.UserDetails.firstname);
+      $(element).text('Welcome back, ' + d.given_name + '!');
+      console.log(d);
     },
     error: function(error) {
       console.log('error: ');
@@ -101,7 +165,9 @@ function loadList(d){
           <p class="fieldText">Current Weather: <i class="weatherIcon" id="weatherIcon_` + element.id + `"></p>
           <p class="fieldText">Area: ` + element.area.q + element.area.u + `</p>
           <p class="fieldText"><img class="fieldicon" src="css/img/addNoteIcon.png">Notes: </p>
+          <div class="fieldNotes" id="notes` + index + `"></div>
           <p class="fieldText"><img class="fieldIcon" src="css/img/plantIcon.png">Activities: </p>
+          <div class="fieldActivities" id="activities` + index + `"></div>
         </div>
       </div>`);
   });
@@ -151,3 +217,46 @@ function centerMap(lat, long){
   Map.setCenter({lat: lat, lng: long});
   $("#field0").click();
 }
+function parseNotes(obj, id){
+  var myNotes = [];
+  $.each(obj.notes, function(i, e){
+    if (obj.notes[i].field == id){
+      myNotes.push(obj.notes[i].note);
+    }
+  });
+  return myNotes;
+}
+
+function loadNotes(div, notes){
+  var html = '<ul>';
+  var temp;
+  $.each(notes, function(i, e){
+    html = html + ("<li>" + notes[i] + "</li>");
+  });
+  html = html + "</ul>";
+  $(div).html(html);
+}
+
+function parseActivites(obj, id){
+  var myActivities = [];
+  $.each(obj.activities, function(i, e){
+    if (obj.activities[i].field == id){
+      myActivities.push(obj.activities[i].activity);
+    }
+  });
+  console.log(myActivities);
+  return myActivities;
+}
+
+function loadActivities(div, activities){
+  var html = '<ul>';
+  var temp;
+  console.log(activities);
+  $.each(activities, function(i, e){
+    html = html + ("<li>" + activities[i] + "</li>");
+  });
+  html = html + "</ul>";
+  console.log(html);
+  $(div).html(html);
+}
+

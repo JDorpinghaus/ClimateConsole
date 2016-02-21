@@ -90,8 +90,11 @@ p {
 }
 
 #username {
+    position: fixed;
+    top: 10px;
+    left: 10px;
     height: auto;
-    margin: 0;
+    margin: 5px;
     padding: 0;
     color: #fff;
 }
@@ -117,7 +120,6 @@ p {
 
 .fieldText {
     font-size: 15px;
-    text-align: center;
     padding: 3px;
     text-align: left;
 }
@@ -223,4 +225,24 @@ i {
     bottom:0px;
     left: 100px;
     margin: 2px;
+}
+
+.fieldNotes{
+    font-size: 12px;
+    text-align: center;
+    padding: 3px;
+}
+
+.fieldActivities{
+    font-size: 12px;
+    text-align: center;
+    padding: 3px;
+}
+
+ul {
+    margin: 0px;
+}
+
+li {
+    text-align: left;
 }
